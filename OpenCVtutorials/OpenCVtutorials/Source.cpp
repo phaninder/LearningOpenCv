@@ -149,8 +149,8 @@ int main()
 	//ManipulatingImage();
 	//ROI();
 
-	Mat image = imread("images/boldt.jpg",1);
-	Mat image2 = imread("images/boldt.jpg", 1);
+	Mat image = imread("boldt.jpg",1);
+	Mat image2 = imread("boldt.jpg", 1);
 	//salt(image, 3000);
 	colorReduce(image, 64);
 

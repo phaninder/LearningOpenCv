@@ -1,4 +1,4 @@
 ﻿  Source.cpp
 Source.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:LBR' specification
-  OpenCVtutorials.vcxproj -> E:\Learning Projects\OpenCVStuff\OpenCVtutorials\x64\Debug\OpenCVtutorials.exe
-  OpenCVtutorials.vcxproj -> E:\Learning Projects\OpenCVStuff\OpenCVtutorials\x64\Debug\OpenCVtutorials.pdb (Full PDB)
+  OpenCVtutorials.vcxproj -> E:\Learning Projects\LearningOpenCv\OpenCVtutorials\x64\Debug\OpenCVtutorials.exe
+  OpenCVtutorials.vcxproj -> E:\Learning Projects\LearningOpenCv\OpenCVtutorials\x64\Debug\OpenCVtutorials.pdb (Full PDB)
