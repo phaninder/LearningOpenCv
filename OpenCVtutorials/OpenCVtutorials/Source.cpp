@@ -143,19 +143,118 @@ void colorReduce(Mat img, int n)
 	}
 }
 
+void colorReduceUsingIt(Mat img, int n)
+{
+	Mat_<Vec3b>::iterator it = img.begin<Vec3b>();
+	MatIterator_<Vec3b> itend = img.end<Vec3b>();
+	int rows = img.rows;
+	int colChannels = img.cols*img.channels();
+	int n2 = (n / 2);
+	for (; it != itend; it++)
+	{
+		(*it)[0] = ((*it)[0] / n) *n + (n2);
+		(*it)[1] = ((*it)[1] / n) *n + (n2);
+		(*it)[2] = ((*it)[2] / n) *n + (n2);
+	}
+	
+}
+
+void Sharpen(const Mat &image, Mat &res)
+{
+	res.create(image.size(), image.type());
+
+	Mat kernel(3, 3, CV_32F, Scalar(0));
+	kernel.at<float>(1, 1) = 5.0;
+	kernel.at<float>(0, 1) = -1.0;
+	kernel.at<float>(1, 0) = -1.0;
+	kernel.at<float>(1, 2) = -1.0;
+	kernel.at<float>(2, 1) = -1.0;
+	
+	filter2D(image, res, image.depth(), kernel);
+	//int channels = image.channels();
+
+	//for (int i = 1; i < image.rows - 1; i++)
+	//{
+	//	const uchar* previous = image.ptr<const uchar>(i - 1);
+	//	const uchar* current = image.ptr<uchar>(i);
+	//	const uchar* next = image.ptr<uchar>(i + 1);
+
+	//	uchar* output = res.ptr<uchar>(i);
+
+	//	for (int j = 1; j < (image.cols - 1)*channels; j++)
+	//	{
+	//		output[j] = saturate_cast<uchar>(5 * current[j] - current[j - channels] - current[j + channels]
+	//			- previous[j] - next[j]);
+	//	}
+	//}
+
+	////set the unprocessed pixels to 0
+	//res.row(0).setTo(Scalar(0));
+	//res.row(res.rows - 1).setTo(Scalar(0));
+	//res.col(0).setTo(Scalar(0));
+	//res.col(res.cols - 1).setTo(Scalar(0));
+}
+
+void showRain(Mat image1, Mat image2,Mat &res,float weight)
+{
+	//image1 = weight*image1+image2;
+	//addWeighted(image1, weight, image2, weight, 0, image1);
+	//scaleAdd(image1, weight, image2, image1);
+	vector<Mat> planes;
+	split(image1, planes);
+	planes[0] += image2;
+	
+	merge(planes, res);
+}
+
+void wave(Mat image,Mat &res)
+{
+	Mat srcX(image.rows, image.cols, CV_32F);
+	Mat srcY(image.rows, image.cols, CV_32F);
+
+	for (int i = 0; i < image.rows; i++)
+	{
+		for (int j = 0; j < image.cols; j++)
+		{
+			srcX.at<float>(i, j) = j;
+			srcY.at<float>(i, j) = i + 5 * sin(j / 10.0);
+		}
+	}
+	remap(image, res, srcX, srcY, INTER_LINEAR);
+}
+
+void flipImage(Mat image, Mat &res)
+{
+	Mat srcX(image.rows, image.cols, CV_32F);
+	Mat srcY(image.rows, image.cols, CV_32F);
+
+	for (int i = 0; i < image.rows; i++)
+	{
+		for (int j = 0; j < image.cols; j++)
+		{
+			srcX.at<float>(i, j) = j;//image.cols - j - 1;
+			srcY.at<float>(i, j) = image.rows-i-1;
+		}
+	}
+
+	remap(image, res, srcX, srcY, INTER_LINEAR);
+}
+
 int main()
 {
+	Mat image = imread("images/boldt.jpg", 1);
+	Mat image2 = imread("images/rain.jpg", 1);
+	Mat res(image.rows, image.cols,CV_32F);
 	//DrawCircle();
 	//ManipulatingImage();
-	//ROI();
-
-	Mat image = imread("boldt.jpg",1);
-	Mat image2 = imread("boldt.jpg", 1);
+	//ROI();//colorReduceUsingIt(image, 64);
+	//Sharpen(image, image2);
 	//salt(image, 3000);
-	colorReduce(image, 64);
-
-	imshow("salted", image);
-	imshow("original", image2);
+	//showRain(image, image2,res,0.5);
+	//wave(image, res);
+	flipImage(image, res);
+	imshow("Original", image);
+	imshow("Sharped", res);
 	waitKey(0);
 	return 0;
 }

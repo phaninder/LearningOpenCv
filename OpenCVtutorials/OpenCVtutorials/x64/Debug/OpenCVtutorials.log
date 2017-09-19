@@ -1,4 +1,8 @@
 ﻿  Source.cpp
+e:\learning projects\opencvstuff\opencvtutorials\opencvtutorials\source.cpp(219): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+e:\learning projects\opencvstuff\opencvtutorials\opencvtutorials\source.cpp(220): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+e:\learning projects\opencvstuff\opencvtutorials\opencvtutorials\source.cpp(235): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+e:\learning projects\opencvstuff\opencvtutorials\opencvtutorials\source.cpp(236): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 Source.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:LBR' specification
-  OpenCVtutorials.vcxproj -> E:\Learning Projects\LearningOpenCv\OpenCVtutorials\x64\Debug\OpenCVtutorials.exe
-  OpenCVtutorials.vcxproj -> E:\Learning Projects\LearningOpenCv\OpenCVtutorials\x64\Debug\OpenCVtutorials.pdb (Full PDB)
+  OpenCVtutorials.vcxproj -> E:\Learning Projects\OpenCVStuff\OpenCVtutorials\x64\Debug\OpenCVtutorials.exe
+  OpenCVtutorials.vcxproj -> E:\Learning Projects\OpenCVStuff\OpenCVtutorials\x64\Debug\OpenCVtutorials.pdb (Full PDB)
