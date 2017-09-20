@@ -3,6 +3,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include "ColorDetector.h"
 
 using namespace std;
 using namespace cv;
@@ -242,9 +243,14 @@ void flipImage(Mat image, Mat &res)
 
 int main()
 {
+	ColorDetector cdetect;
+
 	Mat image = imread("images/boldt.jpg", 1);
 	Mat image2 = imread("images/rain.jpg", 1);
-	Mat res(image.rows, image.cols,CV_32F);
+	//Mat res(image.rows, image.cols,CV_32F);
+
+	if (image.empty())
+		return 0;
 	//DrawCircle();
 	//ManipulatingImage();
 	//ROI();//colorReduceUsingIt(image, 64);
@@ -252,9 +258,13 @@ int main()
 	//salt(image, 3000);
 	//showRain(image, image2,res,0.5);
 	//wave(image, res);
-	flipImage(image, res);
+	//flipImage(image, res);
+	
+	cdetect.setTargetColor(230, 190, 130);
+	Mat result = cdetect.process(image);
+
 	imshow("Original", image);
-	imshow("Sharped", res);
+	imshow("Sharped", result);
 	waitKey(0);
 	return 0;
 }
