@@ -241,16 +241,81 @@ void flipImage(Mat image, Mat &res)
 	remap(image, res, srcX, srcY, INTER_LINEAR);
 }
 
+void Colordetection(Mat image,Mat res)
+{	
+	ColorDetector cdetect;
+	cdetect.setTargetColor(230, 190, 130);
+	Mat result = cdetect.process(image);
+
+	floodFill(image, Point(100, 50), Scalar(255, 255, 255), (Rect*)0,
+	Scalar(35, 35, 35), Scalar(35, 35, 35), FLOODFILL_FIXED_RANGE);
+	Rect rectangle(5, 70, 260, 120);
+	Mat bgMode, fgModel;
+	grabCut(image, res, rectangle, bgMode, fgModel, 5, GC_INIT_WITH_RECT);
+	compare(res, GC_PR_FGD, res, CMP_EQ);
+	Mat foreground(image.size(), CV_8UC3, Scalar(255, 255, 255));
+	image.copyTo(foreground, res);
+
+	Mat hsv;
+	cvtColor(image, hsv, CV_BGR2HSV);
+	vector<Mat> channels;
+	split(hsv, channels);
+
+	imshow("Original", image);
+	imshow("Hue", channels[0]);
+	imshow("Saturation", channels[1]);
+	imshow("Value", channels[2]);
+	imshow("Final image", hsv);
+
+	Mat hs(128, 180, CV_8UC3);
+	for (int h = 0; h < 180; h++)
+	{
+	for (int s = 0; s < 128; s++)
+	{
+	hs.at<Vec3b>(s, h)[0] = h/ 2;
+	hs.at<Vec3b>(s, h)[1] = 255 - s*2;
+	hs.at<Vec3b>(s, h)[2] = 255;
+	}
+	}
+
+	imshow("imag", hs);
+}
+
+void detectHScolor(const Mat &image, double minHue, double maxHue, double minSat, double maxSat, Mat &mask)
+{
+	Mat hsv;
+	cvtColor(image, hsv, CV_BGR2HSV);
+	vector<Mat> channels;
+	split(hsv, channels);
+
+	Mat mask1;
+	threshold(channels[0], mask1, maxHue, 255, THRESH_BINARY_INV);
+
+	Mat mask2;
+	threshold(channels[0], mask2, minHue, 255, THRESH_BINARY);
+
+	Mat hueMask;
+	if (minHue < maxHue)
+		hueMask = mask1&mask2;
+	else
+		hueMask = mask1 | mask2;
+
+	Mat satMask;
+	inRange(channels[1], minSat, maxSat, satMask);
+
+	mask = hueMask & satMask;
+}
+
 int main()
 {
-	ColorDetector cdetect;
 
-	Mat image = imread("images/boldt.jpg", 1);
-	Mat image2 = imread("images/rain.jpg", 1);
-	//Mat res(image.rows, image.cols,CV_32F);
+	Mat image = imread("images/girl.jpg");
+	//Mat image2 = imread("images/rain.jpg", 1);
+	Mat res(image.rows, image.cols,CV_32F);
 
 	if (image.empty())
 		return 0;
+
 	//DrawCircle();
 	//ManipulatingImage();
 	//ROI();//colorReduceUsingIt(image, 64);
@@ -260,11 +325,13 @@ int main()
 	//wave(image, res);
 	//flipImage(image, res);
 	
-	cdetect.setTargetColor(230, 190, 130);
-	Mat result = cdetect.process(image);
-
-	imshow("Original", image);
-	imshow("Sharped", result);
+	Mat mask;
+	detectHScolor(image, 160, 10, 25, 166, mask);
+	
+	Mat detected(image.size(), CV_8UC3, Scalar(0, 0, 0));
+	image.copyTo(detected, mask);
+	imshow("Face", detected);
+	imshow("Mask", mask);
 	waitKey(0);
 	return 0;
 }
