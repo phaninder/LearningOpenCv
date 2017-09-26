@@ -123,12 +123,97 @@ void CannyEdgeDect()
 	imshow("Canny", canny);
 }
 
+void ReadingFromCam()
+{
+	VideoCapture cam(0);
+	if (!cam.isOpened())
+	{
+		cout << "Error opening camera" << endl;
+		return;
+	}
+
+	Mat out;
+	while (true)
+	{
+		cam >> out;
+
+		if (out.empty())
+		{
+			cout << "not rendering video" << endl;
+			break;
+		}
+
+		imshow("Live Video", out);
+		char c = (char)waitKey(1);
+
+		if (c == '27')
+		{
+			cout << "Pressed escape" << endl;
+			break;
+		}
+	}
+	cam.release();
+}
+
+void WritingToFile()
+{
+	namedWindow("Example2_11", WINDOW_AUTOSIZE);
+	namedWindow("Log_Polar", WINDOW_AUTOSIZE);
+
+	VideoCapture cap(0);
+	
+	if (!cap.isOpened())
+	{
+		cout << "Error opening video cam" << endl;
+		return;
+	}
+
+	double fps = cap.get(CAP_PROP_FPS);
+
+	cv::Size size((int)cap.get(CAP_PROP_FRAME_WIDTH), (int)cap.get(CAP_PROP_FRAME_HEIGHT));
+
+	VideoWriter writer;
+	string fileName = "G:/LiveVideo.avi";
+	int fcc = CV_FOURCC('D', 'I', 'V', '3');
+	writer = VideoWriter(fileName, fcc, 10, size);
+
+	if (!writer.isOpened())
+	{
+		cout << "Writer is not initalised" << endl;
+		//return;
+	}
+
+	Mat logpolar_frame, bgr_frame;
+
+	while (true)
+	{
+		cap>> bgr_frame;
+		if (bgr_frame.empty())
+			break;
+		imshow("Example2_11", bgr_frame);
+
+		cv::logPolar(bgr_frame, logpolar_frame, cv::Point(bgr_frame.cols / 2, bgr_frame.rows / 2), 40, WARP_FILL_OUTLIERS);
+		
+		imshow("Log_Polar", logpolar_frame);
+		writer << logpolar_frame;
+		//writer<<bgr_frame;
+
+		char c = cv::waitKey(10);
+		if (c == 27)
+			break;
+	}
+	cap.release();
+}
+
 int main()
 {
 	//PlayVideo();
 	//ApplySmoothing();
 	//PyrDown();
-	CannyEdgeDect();
+	//CannyEdgeDect();
+	//ReadingFromCam();
+
+	WritingToFile();
 	cv::waitKey(0);
 	cv::destroyAllWindows();
 	return 0;
