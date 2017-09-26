@@ -4,6 +4,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include "ColorDetector.h"
+#include "Histogram1D.h"
 
 using namespace std;
 using namespace cv;
@@ -306,33 +307,59 @@ void detectHScolor(const Mat &image, double minHue, double maxHue, double minSat
 	mask = hueMask & satMask;
 }
 
-int main()
+void showHistogram()
 {
+	Mat image = imread("SwapJump.jpg",0); //("images/group.jpg", 0);
 
-	Mat image = imread("images/girl.jpg");
-	//Mat image2 = imread("images/rain.jpg", 1);
-	Mat res(image.rows, image.cols,CV_32F);
-
-	if (image.empty())
-		return 0;
-
-	//DrawCircle();
-	//ManipulatingImage();
-	//ROI();//colorReduceUsingIt(image, 64);
-	//Sharpen(image, image2);
-	//salt(image, 3000);
-	//showRain(image, image2,res,0.5);
-	//wave(image, res);
-	//flipImage(image, res);
+	Histogram1D h;
 	
-	Mat mask;
-	detectHScolor(image, 160, 10, 25, 166, mask);
-	
-	Mat detected(image.size(), CV_8UC3, Scalar(0, 0, 0));
-	image.copyTo(detected, mask);
-	imshow("Face", detected);
-	imshow("Mask", mask);
-	waitKey(0);
-	return 0;
+	/*Mat histor = h.getHistogram(image);
+
+	for (int i = 0; i < 256; i++)
+	{
+		cout << "Value " << i << "=" << histor.at<float>(i) << endl;
+	}*/
+	Mat thresholded(image.size(),image.type());
+	//threshold(image, thresholded, 70, 255,THRESH_BINARY);
+	//imshow("Original image", image);
+	//imshow("Histo", thresholded);;
+
+	cv::equalizeHist(image, thresholded);
+
+	imshow("Original", image);
+	imshow("Modified", thresholded);
+	imshow("histo", h.getHistogramImage(image));
+	imshow("histoModi", h.getHistogramImage(thresholded));
 }
+
+//int main()
+//{
+//	showHistogram();
+//
+//	//Mat image = imread("images/group.jpg",0);
+//	////Mat image2 = imread("images/rain.jpg", 1);
+//	//Mat res(image.rows, image.cols,CV_32F);
+//
+//	//if (image.empty())
+//	//	return 0;
+//
+//	//DrawCircle();
+//	//ManipulatingImage();
+//	//ROI();//colorReduceUsingIt(image, 64);
+//	//Sharpen(image, image2);
+//	//salt(image, 3000);
+//	//showRain(image, image2,res,0.5);
+//	//wave(image, res);
+//	//flipImage(image, res);
+//	
+//	/*Mat mask;
+//	detectHScolor(image, 160, 10, 25, 166, mask);
+//	
+//	Mat detected(image.size(), CV_8UC3, Scalar(0, 0, 0));
+//	image.copyTo(detected, mask);
+//	imshow("Face", detected);
+//	imshow("Mask", mask);*/
+//	waitKey(0);
+//	return 0;
+//}
 
