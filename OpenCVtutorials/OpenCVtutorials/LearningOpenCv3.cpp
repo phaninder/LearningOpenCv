@@ -155,6 +155,18 @@ void ReadingFromCam()
 	cam.release();
 }
 
+int videoSize = 2;
+
+void ChangeVideoSize(int pos, void *)
+{
+	if (videoSize >= 8)
+	{
+		videoSize = 2;
+		return;
+	}
+	videoSize++;
+}
+
 void WritingToFile()
 {
 	namedWindow("Example2_11", WINDOW_AUTOSIZE);
@@ -185,6 +197,10 @@ void WritingToFile()
 
 	Mat logpolar_frame, bgr_frame;
 
+	cout << "Video size:" << videoSize;
+	// Create trackbar
+	createTrackbar("Trackbar", "Log_Polar", &g_slider_position, videoSize, ChangeVideoSize);
+	int prevSize=videoSize;
 	while (true)
 	{
 		cap>> bgr_frame;
@@ -192,12 +208,27 @@ void WritingToFile()
 			break;
 		imshow("Example2_11", bgr_frame);
 
-		cv::logPolar(bgr_frame, logpolar_frame, cv::Point(bgr_frame.cols / 2, bgr_frame.rows / 2), 40, WARP_FILL_OUTLIERS);
-		
-		imshow("Log_Polar", logpolar_frame);
-		writer << logpolar_frame;
-		//writer<<bgr_frame;
 
+		//(int)g_cap.get(cv::CAP_PROP_POS_FRAMES);
+		//g_dontset = 1;
+		cv::setTrackbarPos("Position", "Example2_4", videoSize);
+		if (prevSize != videoSize)
+		{
+			logpolar_frame.deallocate();
+			destroyWindow("Log_Polar");
+		}
+		else
+		{
+			//cv::logPolar(bgr_frame, logpolar_frame, cv::Point(bgr_frame.cols / 2, bgr_frame.rows / 2), 40, WARP_FILL_OUTLIERS);
+			pyrDown(bgr_frame, logpolar_frame, Size((int)bgr_frame.cols / videoSize, (int)bgr_frame.rows / videoSize));
+			if (!logpolar_frame.empty())
+			{
+				imshow("Log_Polar", logpolar_frame);
+				//writer << logpolar_frame;
+			}
+			//writer<<bgr_frame;
+		}
+		prevSize = videoSize;
 		char c = cv::waitKey(10);
 		if (c == 27)
 			break;
@@ -214,7 +245,7 @@ int main()
 	//ReadingFromCam();
 
 	WritingToFile();
-	cv::waitKey(0);
+	//cv::waitKey(0);
 	cv::destroyAllWindows();
 	return 0;
 }
