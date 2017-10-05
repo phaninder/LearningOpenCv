@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/imgproc.hpp>
 
 using namespace std;
 using namespace cv;
@@ -236,6 +236,47 @@ void WritingToFile()
 	cap.release();
 }
 
+Mat image;
+void DrawImg();
+
+void DrawLine(Point p1, Point p2)
+{
+	cv::line(image, p1, p2, Scalar(0, 0, 255), 5,LINE_4);
+	//circle(image, p1, 65, 0, 3);
+	DrawImg();
+}
+
+
+Point p1, p2;
+bool draw;
+void onMouse(int event, int x, int y, int flags, void *param)
+{
+	if (event == EVENT_LBUTTONDOWN)
+	{
+		p1.x = x;
+		p1.y = y;
+		draw = true;
+	}
+
+	if (event == EVENT_LBUTTONUP)
+	{
+		draw = false;
+	}
+
+	if (event == EVENT_MOUSEMOVE)
+	{
+		if (draw)
+		{
+			p2.x = x;
+			p2.y = y;
+			DrawLine(p1, p2);
+			p1 = p2;
+		}
+	}
+}
+
+
+
 int main()
 {
 	//PlayVideo();
@@ -244,8 +285,18 @@ int main()
 	//CannyEdgeDect();
 	//ReadingFromCam();
 
-	WritingToFile();
-	//cv::waitKey(0);
+	//WritingToFile();
+
+	image = imread("puppy.bmp");
+	namedWindow("Image",1);
+	setMouseCallback("Image", onMouse, 0);
+	DrawImg();
+	cv::waitKey(0);
 	cv::destroyAllWindows();
 	return 0;
+}
+
+void DrawImg()
+{
+	imshow("Image", image);
 }

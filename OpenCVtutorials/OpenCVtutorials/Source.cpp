@@ -10,19 +10,19 @@ using namespace std;
 using namespace cv;
 
 
-void onMouse(int event, int x, int y, int flags, void * param)
-{
-	Mat *im = reinterpret_cast<Mat *>(param);
-	switch (event)
-	{
-		case cv::EVENT_LBUTTONDOWN:
-		{
-			cout << "At (" << x << "," << y << ") value is:" <<
-				static_cast<int>(im->at<uchar>(Point(x, y))) << endl;
-			break;
-		}
-	}
-}
+//void onMouse(int event, int x, int y, int flags, void * param)
+//{
+//	Mat *im = reinterpret_cast<Mat *>(param);
+//	switch (event)
+//	{
+//		case cv::EVENT_LBUTTONDOWN:
+//		{
+//			cout << "At (" << x << "," << y << ") value is:" <<
+//				static_cast<int>(im->at<uchar>(Point(x, y))) << endl;
+//			break;
+//		}
+//	}
+//}
 void DrawCircle()
 {
 	Mat image = imread("output.png");
@@ -35,7 +35,7 @@ void DrawCircle()
 		namedWindow("Image");
 		imshow("Image", image);
 		cout << "No of channels:" << image.channels() << endl;
-		setMouseCallback("Image", onMouse, reinterpret_cast<void*>(&image));
+		//setMouseCallback("Image", onMouse, reinterpret_cast<void*>(&image));
 		//imshow("Resultwin", result);
 		//imwrite("output.png", result);
 	}

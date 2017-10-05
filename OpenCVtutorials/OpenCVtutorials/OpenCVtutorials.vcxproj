@@ -154,9 +154,9 @@
   <ItemGroup>
     <ClCompile Include="ColorDetector.cpp" />
     <ClCompile Include="ColorHistogram.cpp" />
+    <ClCompile Include="DrawingOnImage.cpp" />
     <ClCompile Include="Histogram1D.cpp" />
     <ClCompile Include="LearningOpenCv3.cpp" />
-    <ClCompile Include="lkdemo.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
